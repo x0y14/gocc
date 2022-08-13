@@ -83,7 +83,7 @@ func primary() *Node {
 	return NewNodeNum(expectNumber())
 }
 
-func parse(tok *Token) *Node {
+func Parse(tok *Token) *Node {
 	token = tok
 	return expr()
 }

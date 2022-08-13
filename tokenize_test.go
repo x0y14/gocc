@@ -53,7 +53,7 @@ func TestTokenize(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tok := tokenize([]rune(tt.in))
+			tok := Tokenize([]rune(tt.in))
 			assert.Equal(t, tt.expect, tok)
 		})
 	}

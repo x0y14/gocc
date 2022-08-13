@@ -50,7 +50,7 @@ func strToI() int {
 func errorAt(text string) {
 	log.Fatalf("\n%s\n%s^ %s", string(userInput), strings.Repeat(" ", p), text)
 }
-func tokenize(r []rune) *Token {
+func Tokenize(r []rune) *Token {
 	userInput = r
 	p = 0
 	var head Token
