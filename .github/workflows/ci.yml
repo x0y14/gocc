@@ -19,3 +19,4 @@ jobs:
         with:
           context: .
           push: false
+          platforms: linux/arm64/v8
