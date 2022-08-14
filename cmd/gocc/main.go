@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/x0y14/gocc"
+	"log"
 	"os"
+	"runtime"
 )
 
 func main() {
@@ -20,9 +22,19 @@ func main() {
 
 	fmt.Println(".text")
 	fmt.Println(".align 2")
-	fmt.Println(".global _main")
-	fmt.Println("_main:")
 
+	// macos: _main
+	// linux:  main
+	var mainSymbol string
+	if runtime.GOOS == "darwin" {
+		mainSymbol = "_main"
+	} else if runtime.GOOS == "linux" {
+		mainSymbol = "main"
+	} else {
+		log.Fatalf("unsupported platform: %v", runtime.GOOS)
+	}
+	fmt.Printf(".global %s\n", mainSymbol)
+	fmt.Printf("%s:\n", mainSymbol)
 	// wzr(32bit zero register)をスタックに書き込む
 	// 何をしてるの不明
 	// https://developer.arm.com/documentation/den0024/a/ch05s01s03
