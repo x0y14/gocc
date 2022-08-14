@@ -12,5 +12,3 @@ COPY Makefile ./
 COPY test.sh ./
 
 RUN make test
-
-
