@@ -20,6 +20,7 @@ func main() {
 	token := gocc.Tokenize([]rune(userInput))
 	node := gocc.Parse(token)
 
+	// prologue
 	fmt.Println(".text")
 	fmt.Println(".align 2")
 
@@ -35,6 +36,7 @@ func main() {
 	}
 	fmt.Printf(".global %s\n", mainSymbol)
 	fmt.Printf("%s:\n", mainSymbol)
+
 	// wzr(32bit zero register)をスタックに書き込む
 	// 何をしてるの不明
 	// https://developer.arm.com/documentation/den0024/a/ch05s01s03
@@ -47,6 +49,7 @@ func main() {
 	// nodeをたどってコードを生成する
 	gocc.Gen(node)
 
+	// epilogue
 	// 最終的な計算結果はスタックに保存されているので取り出す
 	fmt.Println("  ldr w8, [sp]")
 	// 最終的な計算結果の保存に使用したスタック分spを戻してあげる
