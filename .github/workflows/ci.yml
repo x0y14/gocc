@@ -1,0 +1,26 @@
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    name: test on ubuntu20.04(aarch64)
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19'
+      - run: go version
+      - uses: uraimo/run-on-arch-action@v2
+        name: test on aarch64
+        id: test_aarch64
+        with:
+          arch: aarch64
+          distro: ubuntu20.04
+
+          run: |
+            go mod tidy
+            echo ::set-output name=result::$(make test)
+
+      - name: get output
+        run: |
+          echo "${{ steps.test_aarch64.outputs.result }}"
