@@ -39,6 +39,40 @@ func atEof() bool {
 }
 
 func expr() *Node {
+	return equality()
+}
+
+func equality() *Node {
+	node := relational()
+	for {
+		if consume("==") {
+			node = NewNode(NdEQ, node, relational())
+		} else if consume("!=") {
+			node = NewNode(NdNE, node, relational())
+		} else {
+			return node
+		}
+	}
+}
+
+func relational() *Node {
+	node := add()
+	for {
+		if consume("<") {
+			node = NewNode(NdLT, node, add())
+		} else if consume("<=") {
+			node = NewNode(NdLE, node, add())
+		} else if consume(">") {
+			node = NewNode(NdLT, add(), node)
+		} else if consume(">=") {
+			node = NewNode(NdLE, add(), node)
+		} else {
+			return node
+		}
+	}
+}
+
+func add() *Node {
 	node := mul()
 	for {
 		if consume("+") {
@@ -67,8 +101,7 @@ func mul() *Node {
 func unary() *Node {
 	if consume("+") {
 		return primary()
-	}
-	if consume("-") {
+	} else if consume("-") {
 		return NewNode(NdSUB, NewNodeNum(0), primary())
 	}
 	return primary()
