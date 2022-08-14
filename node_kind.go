@@ -3,14 +3,18 @@ package gocc
 type NodeKind int
 
 const (
-	NdADD = iota
-	NdSUB
-	NdMUL
-	NdDIV
-	NdNUM
-	NdEQ
-	NdNEQ
-	NdLES
-	NdLESEQ
-	NdASSIGN
+	NdADD = iota // +
+	NdSUB        // -
+	NdMUL        // *
+	NdDIV        // /
+
+	NdEQ // ==
+	NdNE //!=
+	NdLT // <
+	NdLE // <=
+
+	NdASSIGN // =
+
+	NdNUM // 数字
+
 )
