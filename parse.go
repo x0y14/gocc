@@ -7,6 +7,8 @@ import (
 // 現在着目しているトークン
 var token *Token
 
+var code []*Node
+
 func consume(op string) bool {
 	if token.kind != TkRESERVED ||
 		len([]rune(op)) != token.len ||
@@ -15,6 +17,15 @@ func consume(op string) bool {
 	}
 	token = token.next
 	return true
+}
+
+func consumeIdent() *Token {
+	if token.kind != TkIDENT {
+		return nil
+	}
+	tok := token
+	token = token.next
+	return tok
 }
 
 func expect(op string) {
@@ -38,8 +49,30 @@ func atEof() bool {
 	return token.kind == TkEOF
 }
 
+func program() {
+	for !atEof() {
+		//fmt.Println("no eof")
+		code = append(code, stmt())
+	}
+	code = append(code, nil)
+}
+
+func stmt() *Node {
+	node := expr()
+	expect(";")
+	return node
+}
+
 func expr() *Node {
-	return equality()
+	return assign()
+}
+
+func assign() *Node {
+	node := equality()
+	if consume("=") {
+		return NewNode(NdASSIGN, node, equality())
+	}
+	return node
 }
 
 func equality() *Node {
@@ -113,10 +146,20 @@ func primary() *Node {
 		expect(")")
 		return node
 	}
+	if identToken := consumeIdent(); identToken != nil {
+		// 現段階でidentは１文字のアルファベット
+		loc := int(identToken.str[0]) - 'a' + 1
+		// b - a + 1 = 2
+		// a - a + 1 = 1
+		// aからどれだけ離れているか+1
+		return NewNodeLVar(loc * 16)
+	}
 	return NewNodeNum(expectNumber())
 }
 
-func Parse(tok *Token) *Node {
+func Parse(tok *Token) []*Node {
+	code = []*Node{}
 	token = tok
-	return expr()
+	program()
+	return code
 }

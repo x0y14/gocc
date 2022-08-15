@@ -72,7 +72,7 @@ func Tokenize(r []rune) *Token {
 			}
 		}
 
-		if strings.ContainsRune("+-*/()=<>!", userInput[p]) {
+		if strings.ContainsRune("+-*/()=<>!;", userInput[p]) {
 			cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
 			p++
 			continue
@@ -83,6 +83,12 @@ func Tokenize(r []rune) *Token {
 			strInt := strconv.Itoa(integer)
 			cur = NewToken(TkNUM, cur, []rune(strInt), len([]rune(strInt)))
 			cur.val = integer
+			continue
+		}
+
+		if 'a' <= userInput[p] && userInput[p] <= 'z' {
+			cur = NewToken(TkIDENT, cur, []rune{userInput[p]}, 1)
+			p++
 			continue
 		}
 

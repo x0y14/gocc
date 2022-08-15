@@ -15,6 +15,7 @@ const (
 
 	NdASSIGN // =
 
-	NdNUM // 数字
+	NdNUM  // 数字
+	NdLVAR // Local VAR
 
 )

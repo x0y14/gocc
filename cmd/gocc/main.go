@@ -18,7 +18,7 @@ func main() {
 	userInput := argv[1]
 
 	token := gocc.Tokenize([]rune(userInput))
-	node := gocc.Parse(token)
+	code := gocc.Parse(token)
 
 	// prologue
 	fmt.Println(".text")
@@ -44,22 +44,32 @@ func main() {
 	// もしかしたら現在地の保存をしているのかもしれない..? -> ただ、参照されている感じがしない
 	// 16Nづつ動かす
 	fmt.Println("  sub sp, sp, #16")
-	fmt.Println("str wzr, [sp]")
+	fmt.Println("  str wzr, [sp]")
+
+	fmt.Println("  sub sp, sp, #16")
+	fmt.Println("  str x29, [sp]")
+
+	fmt.Println("  mov x29, sp")
+
+	fmt.Printf("  sub sp, sp, #%d\n", 26*16)
 
 	// nodeをたどってコードを生成する
-	gocc.Gen(node)
-
+	for _, node := range code {
+		if node != nil {
+			gocc.Gen(node)
+			// 最終的な計算結果はスタックに保存されているので取り出す
+			fmt.Println("  ldr x8, [sp]")
+			// 最終的な計算結果の保存に使用したスタック分spを戻してあげる
+			fmt.Println("  add sp, sp, #16")
+		}
+	}
 	// epilogue
-	// 最終的な計算結果はスタックに保存されているので取り出す
-	fmt.Println("  ldr w8, [sp]")
-	// 最終的な計算結果の保存に使用したスタック分spを戻してあげる
-	fmt.Println("  add sp, sp, #16")
 
 	// w0はプログラムの結果として使用されるレジスタ
 	// w0に最終結果を書き込んであげる
-	// w0 = w8
-	fmt.Println("  mov w0, w8")
-	// 一番最初にwzrを書き込んだ分のspを戻す
+	// w0 =x8
+	fmt.Println("  mov x0, x8")
+	// 一番最初にxzrを書き込んだ分のspを戻す
 	fmt.Println("  add sp, sp, #16")
 
 	// 終了

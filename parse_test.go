@@ -12,8 +12,8 @@ func TestParse(t *testing.T) {
 		expect *Node
 	}{
 		{
-			name:   "1-3",
-			token:  Tokenize([]rune("1-3")),
+			name:   "1-3;",
+			token:  Tokenize([]rune("1-3;")),
 			expect: NewNode(NdSUB, NewNodeNum(1), NewNodeNum(3)),
 		},
 	}
@@ -22,5 +22,13 @@ func TestParse(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.expect, Parse(tt.token))
 		})
+	}
+}
+
+func TestGen(t *testing.T) {
+	token := Tokenize([]rune("a=1;"))
+	code := Parse(token)
+	for _, node := range code {
+		Gen(node)
 	}
 }
