@@ -2,7 +2,10 @@ module github.com/x0y14/gocc
 
 go 1.19
 
-require github.com/stretchr/testify v1.8.0
+require (
+	github.com/Knetic/govaluate v3.0.0+incompatible
+	github.com/stretchr/testify v1.8.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
