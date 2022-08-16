@@ -3,7 +3,7 @@ WORKDIR /go/src/gocc
 
 COPY go.mod ./
 COPY go.sum ./
-RUN go mod tidy
+RUN go mod download
 
 COPY cmd ./cmd
 COPY *.go ./
