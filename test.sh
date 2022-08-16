@@ -58,4 +58,6 @@ assert 26 "a=1;b=1;c=1;d=1;e=1;f=1;g=1;h=1;i=1;j=1;k=1;l=1;m=1;n=1;o=1;p=1;q=1;r
 assert 2 "a=2;b=9;c=3;d=0;e=2;f=4;g=8;h=9;i=7;j=0;k=8;l=8;m=2;n=5;o=1;p=6;q=2;r=1;s=9;t=8;u=1;v=6;w=2;x=7;y=9;z=2;return a/b+c-d/e*f+g+h+i+j*k-l+m-n-o/p/q/r/s-t+u*v*w-x-y-z;"
 assert 10 "five=5;result=five*2; return result;"
 assert 10 "return 10; return 100;"
+assert 20 "if ( 8 > 2 ) return 20; return 10;"
+assert 10 "if ( 2 > 8 ) return 20; return 10;"
 echo OK

@@ -7,6 +7,7 @@ const (
 	TkNUM
 	TkIDENT
 	TkRETURN
+	TkIF
 	TkEOF
 )
 
@@ -16,6 +17,7 @@ func (tk TokenKind) String() string {
 		"TkNUM",
 		"TkIDENT",
 		"TkRETURN",
+		"TkIF",
 		"TkEOF",
 	}[tk]
 }

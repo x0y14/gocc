@@ -120,6 +120,12 @@ func Tokenize(r []rune) *Token {
 			continue
 		}
 
+		if startWithAndAfterIsNotAlnum("if") {
+			cur = NewToken(TkIF, cur, []rune("if"), 2)
+			p += 2
+			continue
+		}
+
 		// 数字から始まることはない
 		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
 			('A' <= userInput[p] && userInput[p] <= 'Z') || '_' == userInput[p] {

@@ -5,6 +5,18 @@ import (
 	"log"
 )
 
+var labelCounter int
+
+func init() {
+	labelCounter = 0
+}
+
+func label() string {
+	l := fmt.Sprintf("__lable_%d", labelCounter)
+	labelCounter++
+	return l
+}
+
 func genLVal(node *Node) {
 	if node.kind != NdLVAR {
 		log.Fatalf("代入の左辺値が変数ではありません")
@@ -71,6 +83,22 @@ func Gen(node *Node) {
 
 		// 終了
 		fmt.Println("  ret")
+		return
+	case NdIF:
+		// gotoに使用するラベルを生成
+		ifLabel := label()
+		// 条件式を生成
+		Gen(node.lhs)
+		// 条件式の結果を取り出す
+		// x8 = [sp]; sp+=16
+		fmt.Println("  ldr x8, [sp], #16")
+		// is 0(false) ?
+		fmt.Println("  cmp x8, 0")
+		fmt.Printf("  b.eq %s\n", ifLabel)
+		// trueだった場合のコードを生成
+		Gen(node.rhs)
+		// falseだった場合のジャンプ先
+		fmt.Printf("%s:\n", ifLabel)
 		return
 	}
 

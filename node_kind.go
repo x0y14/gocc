@@ -19,4 +19,5 @@ const (
 	NdLVAR // Local VAR
 
 	NdRETURN
+	NdIF
 )

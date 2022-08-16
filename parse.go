@@ -80,12 +80,21 @@ func program() {
 
 func stmt() *Node {
 	var node *Node
-	if consumeKeyword(TkRETURN) {
+	switch {
+	case consumeKeyword(TkRETURN):
 		node = NewNode(NdRETURN, expr(), nil)
-	} else {
+		expect(";")
+	case consumeKeyword(TkIF):
+		expect("(")
+		// 条件式
 		node = expr()
+		expect(")")
+		// then
+		node = NewNode(NdIF, node, stmt())
+	default:
+		node = expr()
+		expect(";")
 	}
-	expect(";")
 	return node
 }
 

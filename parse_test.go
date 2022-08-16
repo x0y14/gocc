@@ -32,6 +32,17 @@ func TestParse(t *testing.T) {
 				nil,
 			},
 		},
+		{
+			name:  "expect 20",
+			token: Tokenize([]rune("if (8 < 2) return 10; return 20;")),
+			expect: []*Node{
+				NewNode(NdIF,
+					NewNode(NdLT, NewNodeNum(8), NewNodeNum(2)),
+					NewNode(NdRETURN, NewNodeNum(10), nil)),
+				NewNode(NdRETURN, NewNodeNum(20), nil),
+				nil,
+			},
+		},
 	}
 
 	for _, tt := range tests {
