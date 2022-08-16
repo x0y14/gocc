@@ -105,6 +105,29 @@ func stmt() *Node {
 		cond := expr()
 		expect(")")
 		node = NewNodeWithExpr(NdWHILE, nil, cond, nil, stmt(), nil)
+	case consumeKeyword(TkFOR):
+		// for (A;B;C) D
+		expect("(")
+		var init, cond, loop *Node
+		if !consume(";") {
+			init = expr()
+			expect(";")
+		} else {
+			expect(";")
+		}
+		if !consume(";") {
+			cond = expr()
+			expect(";")
+		} else {
+			expect(";")
+		}
+		if !consume(")") {
+			loop = expr()
+			expect(")")
+		} else {
+			expect(")")
+		}
+		node = NewNodeWithExpr(NdFOR, init, cond, loop, stmt(), nil)
 	default:
 		node = expr()
 		expect(";")

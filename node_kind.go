@@ -22,4 +22,5 @@ const (
 	NdIF     //
 	NdIFELSE //
 	NdWHILE
+	NdFOR
 )

@@ -183,6 +183,45 @@ func Gen(node *Node) {
 		fmt.Printf("%s:\n", endLabel)
 		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
 		return
+	case NdFOR:
+		// for (A;B;C) D
+		//   A
+		// begin:
+		//   B
+		//   pop x8
+		//   cmp x8, 0
+		//   b.eq end
+		//   D
+		//   C
+		//   b begin
+		// end:
+		mark := randomString(5)
+		beginLabel := label()
+		endLabel := label()
+		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
+		// A
+		Gen(node.init)
+		// begin:
+		fmt.Printf("%s:\n", beginLabel)
+		// B
+		Gen(node.cond)
+		// pop x8
+		// x8 = [sp]; sp+=16
+		fmt.Println("  ldr x8, [sp], #16")
+		// cmp x8, 0
+		fmt.Println("  cmp x8, 0")
+		// b.eq end
+		fmt.Printf("  b.eq %s\n", endLabel)
+		// D
+		Gen(node.lhs)
+		// C
+		Gen(node.loop)
+		// b begin
+		fmt.Printf("  b %s\n", beginLabel)
+		// end:
+		fmt.Printf("%s:\n", endLabel)
+		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
+		return
 	}
 
 	Gen(node.lhs)

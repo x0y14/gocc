@@ -143,6 +143,12 @@ userInputLoop:
 			continue
 		}
 
+		if startWithAndAfterIsNotAlnum("for") {
+			cur = NewToken(TkFOR, cur, []rune("for"), 3)
+			p += 3
+			continue
+		}
+
 		// 数字から始まることはない
 		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
 			('A' <= userInput[p] && userInput[p] <= 'Z') || '_' == userInput[p] {
