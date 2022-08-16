@@ -3,6 +3,8 @@ package gocc
 import (
 	"fmt"
 	"log"
+	"math/rand"
+	"time"
 )
 
 var labelCounter int
@@ -15,6 +17,17 @@ func label() string {
 	l := fmt.Sprintf("__lable_%d", labelCounter)
 	labelCounter++
 	return l
+}
+
+func comment(c string) string {
+	return fmt.Sprintf("/*%s*/", c)
+}
+
+func randomString(length int) string {
+	rand.Seed(time.Now().UnixNano())
+	b := make([]byte, length)
+	rand.Read(b)
+	return fmt.Sprintf("%x", b)[:length]
 }
 
 func genLVal(node *Node) {
@@ -85,6 +98,8 @@ func Gen(node *Node) {
 		fmt.Println("  ret")
 		return
 	case NdIF:
+		mark := randomString(5)
+		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
 		// gotoに使用するラベルを生成
 		ifLabel := label()
 		// 条件式を生成
@@ -99,8 +114,11 @@ func Gen(node *Node) {
 		Gen(node.lhs)
 		// falseだった場合のジャンプ先
 		fmt.Printf("%s:\n", ifLabel)
+		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
 		return
 	case NdIFELSE:
+		mark := randomString(5)
+		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
 		// * 上から順に実行される
 		//  if (A == 0)
 		//    goto els;
@@ -130,6 +148,7 @@ func Gen(node *Node) {
 		fmt.Printf("%s:\n", elseLabel)
 		Gen(node.rhs)
 		fmt.Printf("%s:\n", endLabel)
+		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
 		return
 	}
 
