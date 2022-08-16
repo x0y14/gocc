@@ -29,6 +29,7 @@ func startWith(q string) bool {
 	return true
 }
 
+// userInput[p]が数字である限り取得し、繋げ、次へ進む
 func strToI() int {
 	var integer []rune
 	for p < len(userInput) {
@@ -45,6 +46,21 @@ func strToI() int {
 		log.Panicf("整数をパースできませんでした%s", err)
 	}
 	return v
+}
+
+// userInput[p]がアルファベットであるかぎり取得し、繋げ、次へ進む
+func strToIdent() []rune {
+	var ident []rune
+	for p < len(userInput) {
+		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
+			('A' <= userInput[p] && userInput[p] <= 'Z') {
+			ident = append(ident, userInput[p])
+			p++
+		} else {
+			break
+		}
+	}
+	return ident
 }
 
 func errorAt(text string) {
@@ -86,9 +102,10 @@ func Tokenize(r []rune) *Token {
 			continue
 		}
 
-		if 'a' <= userInput[p] && userInput[p] <= 'z' {
-			cur = NewToken(TkIDENT, cur, []rune{userInput[p]}, 1)
-			p++
+		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
+			('A' <= userInput[p] && userInput[p] <= 'Z') {
+			ident := strToIdent()
+			cur = NewToken(TkIDENT, cur, ident, len(ident))
 			continue
 		}
 

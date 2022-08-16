@@ -7,6 +7,10 @@ import (
 // 現在着目しているトークン
 var token *Token
 
+// 着目しているローカル変数
+var locals *LocalVariable
+
+// 構文解析により得られたノード群
 var code []*Node
 
 func consume(op string) bool {
@@ -47,6 +51,15 @@ func expectNumber() int {
 
 func atEof() bool {
 	return token.kind == TkEOF
+}
+
+func findLocalVariable(tok *Token) *LocalVariable {
+	for variable := locals; variable != nil; variable = variable.next {
+		if variable != nil && runeCmp(variable.name, tok.str) {
+			return variable
+		}
+	}
+	return nil
 }
 
 func program() {
@@ -147,19 +160,35 @@ func primary() *Node {
 		return node
 	}
 	if identToken := consumeIdent(); identToken != nil {
-		// 現段階でidentは１文字のアルファベット
-		loc := int(identToken.str[0]) - 'a' + 1
-		// b - a + 1 = 2
-		// a - a + 1 = 1
-		// aからどれだけ離れているか+1
-		return NewNodeLVar(loc * 16)
+		var node *Node
+		lVar := findLocalVariable(identToken)
+		if lVar != nil {
+			// すでに宣言されているので、どこにデータが入っているのかというデータをもつノードを
+			// 作成する
+			node = NewNodeLVar(lVar.offset)
+		} else {
+			// 新しく宣言
+			lVar = &LocalVariable{
+				next:   locals,
+				name:   identToken.str,
+				len:    identToken.len,
+				offset: locals.offset + 16, // 最後に宣言されたものから16離れた位置にデータを入れてあげる
+			}
+			node = NewNodeLVar(lVar.offset)
+			// 新しく宣言したのでそれを一覧につなげてあげる
+			locals = lVar
+		}
+		return node
 	}
 	return NewNodeNum(expectNumber())
 }
 
 func Parse(tok *Token) []*Node {
-	code = []*Node{}
+	// init
 	token = tok
+	locals = &LocalVariable{}
+	code = []*Node{}
+
 	program()
 	return code
 }

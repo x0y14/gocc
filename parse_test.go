@@ -9,12 +9,20 @@ func TestParse(t *testing.T) {
 	var tests = []struct {
 		name   string
 		token  *Token
-		expect *Node
+		expect []*Node
 	}{
+		//{
+		//	name:   "1-3;",
+		//	token:  Tokenize([]rune("1-3;")),
+		//	expect: NewNode(NdSUB, NewNodeNum(1), NewNodeNum(3)),
+		//},
 		{
-			name:   "1-3;",
-			token:  Tokenize([]rune("1-3;")),
-			expect: NewNode(NdSUB, NewNodeNum(1), NewNodeNum(3)),
+			name:  "five * 5",
+			token: Tokenize([]rune("five = 5;")),
+			expect: []*Node{
+				NewNode(NdASSIGN, NewNodeLVar(16), NewNodeNum(5)),
+				nil,
+			},
 		},
 	}
 
