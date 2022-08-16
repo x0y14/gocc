@@ -57,10 +57,10 @@ func main() {
 	for _, node := range code {
 		if node != nil {
 			gocc.Gen(node)
-			// 最終的な計算結果はスタックに保存されているので取り出す
-			fmt.Println("  ldr x8, [sp]")
-			// 最終的な計算結果の保存に使用したスタック分spを戻してあげる
-			fmt.Println("  add sp, sp, #16")
+			//// 最終的な計算結果はスタックに保存されているので取り出す
+			//fmt.Println("  ldr x8, [sp]")
+			//// 最終的な計算結果の保存に使用したスタック分spを戻してあげる
+			//fmt.Println("  add sp, sp, #16")
 		}
 	}
 	// epilogue
@@ -68,10 +68,10 @@ func main() {
 	// w0はプログラムの結果として使用されるレジスタ
 	// w0に最終結果を書き込んであげる
 	// w0 =x8
-	fmt.Println("  mov x0, x8")
-	// 一番最初にxzrを書き込んだ分のspを戻す
-	fmt.Println("  add sp, sp, #16")
-
-	// 終了
-	fmt.Println("  ret")
+	//fmt.Println("  mov x0, x8")
+	//// 一番最初にxzrを書き込んだ分のspを戻す
+	//fmt.Println("  add sp, sp, #16")
+	//
+	//// 終了
+	//fmt.Println("  ret")
 }

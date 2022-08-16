@@ -32,6 +32,14 @@ func consumeIdent() *Token {
 	return tok
 }
 
+func consumeKeyword(kind TokenKind) bool {
+	if token.kind != kind {
+		return false
+	}
+	token = token.next
+	return true
+}
+
 func expect(op string) {
 	if token.kind != TkRESERVED ||
 		!runeCmp(token.str, []rune(op)) {
@@ -71,7 +79,12 @@ func program() {
 }
 
 func stmt() *Node {
-	node := expr()
+	var node *Node
+	if consumeKeyword(TkRETURN) {
+		node = NewNode(NdRETURN, expr(), nil)
+	} else {
+		node = expr()
+	}
 	expect(";")
 	return node
 }

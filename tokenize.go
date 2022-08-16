@@ -29,6 +29,19 @@ func startWith(q string) bool {
 	return true
 }
 
+// isAlnum
+// r in [0-9a-zA-Z_]
+func isAlnum(r rune) bool {
+	return ('a' <= r && r <= 'z') ||
+		('A' <= r && r <= 'Z') ||
+		('0' <= r && r <= '9') || r == '_'
+}
+
+// startWithAndAfterIsNotAlnum qで始まるか　かつ　その後が変数として使用可能な文字
+func startWithAndAfterIsNotAlnum(q string) bool {
+	return startWith(q) && !isAlnum(userInput[p+len(q)])
+}
+
 // userInput[p]が数字である限り取得し、繋げ、次へ進む
 func strToI() int {
 	var integer []rune
@@ -52,8 +65,7 @@ func strToI() int {
 func strToIdent() []rune {
 	var ident []rune
 	for p < len(userInput) {
-		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
-			('A' <= userInput[p] && userInput[p] <= 'Z') {
+		if isAlnum(userInput[p]) {
 			ident = append(ident, userInput[p])
 			p++
 		} else {
@@ -102,8 +114,15 @@ func Tokenize(r []rune) *Token {
 			continue
 		}
 
+		if startWithAndAfterIsNotAlnum("return") {
+			cur = NewToken(TkRETURN, cur, []rune("return"), 6)
+			p += 6
+			continue
+		}
+
+		// 数字から始まることはない
 		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
-			('A' <= userInput[p] && userInput[p] <= 'Z') {
+			('A' <= userInput[p] && userInput[p] <= 'Z') || '_' == userInput[p] {
 			ident := strToIdent()
 			cur = NewToken(TkIDENT, cur, ident, len(ident))
 			continue

@@ -24,6 +24,14 @@ func TestParse(t *testing.T) {
 				nil,
 			},
 		},
+		{
+			name:  "return 0;",
+			token: Tokenize([]rune("return 0;")),
+			expect: []*Node{
+				NewNode(NdRETURN, NewNodeNum(0), nil),
+				nil,
+			},
+		},
 	}
 
 	for _, tt := range tests {

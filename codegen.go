@@ -57,6 +57,21 @@ func Gen(node *Node) {
 		fmt.Println("  sub sp, sp, #16")
 		fmt.Println("  str x9, [sp]")
 		return
+	case NdRETURN:
+		Gen(node.lhs)
+
+		// 最終的な計算結果はスタックに保存されているので取り出す
+		fmt.Println("  ldr x8, [sp]")
+		// 最終的な計算結果の保存に使用したスタック分spを戻してあげる
+		fmt.Println("  add sp, sp, #16")
+
+		fmt.Println("  mov x0, x8")
+		// 一番最初にxzrを書き込んだ分のspを戻す
+		fmt.Println("  add sp, sp, #16")
+
+		// 終了
+		fmt.Println("  ret")
+		return
 	}
 
 	Gen(node.lhs)

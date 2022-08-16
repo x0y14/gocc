@@ -6,6 +6,7 @@ const (
 	TkRESERVED = iota
 	TkNUM
 	TkIDENT
+	TkRETURN
 	TkEOF
 )
 
@@ -14,6 +15,7 @@ func (tk TokenKind) String() string {
 		"TkRESERVED",
 		"TkNUM",
 		"TkIDENT",
+		"TkRETURN",
 		"TkEOF",
 	}[tk]
 }
