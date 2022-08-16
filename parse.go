@@ -99,6 +99,12 @@ func stmt() *Node {
 			// if (A) B
 			node = NewNodeWithExpr(NdIF, nil, cond, nil, b, nil)
 		}
+	case consumeKeyword(TkWHILE):
+		// while (A) B
+		expect("(")
+		cond := expr()
+		expect(")")
+		node = NewNodeWithExpr(NdWHILE, nil, cond, nil, stmt(), nil)
 	default:
 		node = expr()
 		expect(";")

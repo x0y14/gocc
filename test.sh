@@ -64,4 +64,6 @@ assert 20 "if ( 8 > 2 ) return 20; else return 10;"
 assert 10 "if ( 8 < 2 ) return 20; else return 10;"
 assert 10 "if ( 8==8 ) return 10;"
 assert 2 "cond = 2; if ( cond == 1 ) return 1; else if ( cond == 2 ) return 2; else return 3;"
+assert 10 "i=0; while ( i<10 ) i=i+1; return i;"
+assert 2 "x=2; while(x ==1) x=x+1; return x;"
 echo OK

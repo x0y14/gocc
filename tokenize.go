@@ -137,6 +137,12 @@ userInputLoop:
 			continue
 		}
 
+		if startWithAndAfterIsNotAlnum("while") {
+			cur = NewToken(TkWHILE, cur, []rune("while"), 5)
+			p += 5
+			continue
+		}
+
 		// 数字から始まることはない
 		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
 			('A' <= userInput[p] && userInput[p] <= 'Z') || '_' == userInput[p] {

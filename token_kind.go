@@ -9,6 +9,7 @@ const (
 	TkRETURN
 	TkIF
 	TkELSE
+	TkWHILE
 	TkEOF
 )
 
@@ -20,6 +21,7 @@ func (tk TokenKind) String() string {
 		"TkRETURN",
 		"TkIF",
 		"TkELSE",
+		"WHILE",
 		"TkEOF",
 	}[tk]
 }

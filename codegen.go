@@ -101,7 +101,7 @@ func Gen(node *Node) {
 		mark := randomString(5)
 		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
 		// gotoに使用するラベルを生成
-		ifLabel := label()
+		falseLabel := label()
 		// 条件式を生成
 		Gen(node.cond)
 		// 条件式の結果を取り出す
@@ -109,11 +109,11 @@ func Gen(node *Node) {
 		fmt.Println("  ldr x8, [sp], #16")
 		// is 0(false) ?
 		fmt.Println("  cmp x8, 0")
-		fmt.Printf("  b.eq %s\n", ifLabel)
+		fmt.Printf("  b.eq %s\n", falseLabel)
 		// trueだった場合のコードを生成
 		Gen(node.lhs)
 		// falseだった場合のジャンプ先
-		fmt.Printf("%s:\n", ifLabel)
+		fmt.Printf("%s:\n", falseLabel)
 		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
 		return
 	case NdIFELSE:
@@ -147,6 +147,39 @@ func Gen(node *Node) {
 		fmt.Printf("  b %s\n", endLabel)
 		fmt.Printf("%s:\n", elseLabel)
 		Gen(node.rhs)
+		fmt.Printf("%s:\n", endLabel)
+		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
+		return
+	case NdWHILE:
+		mark := randomString(5)
+		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
+		// while (A) B
+		// begin:
+		//   A
+		//   pop x8
+		//   cmp x8, 0
+		//   b.eq end
+		//   B
+		//   b begin
+		// end:
+		beginLabel := label()
+		endLabel := label()
+		// begin:
+		fmt.Printf("%s:\n", beginLabel)
+		// A
+		Gen(node.cond)
+		// Aの結果を取り出す
+		// x8 = [sp]; sp += 16
+		fmt.Println("ldr x8, [sp], #16")
+		// (x8 == 0)
+		fmt.Println("  cmp x8, #0")
+		// true(1), A == false, goto end
+		fmt.Printf("  b.eq %s\n", endLabel)
+		// B
+		Gen(node.lhs)
+		// goto begin, ture-loop
+		fmt.Printf("  b %s\n", beginLabel)
+		// end:
 		fmt.Printf("%s:\n", endLabel)
 		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
 		return
