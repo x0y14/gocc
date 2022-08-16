@@ -8,6 +8,7 @@ const (
 	TkIDENT
 	TkRETURN
 	TkIF
+	TkELSE
 	TkEOF
 )
 
@@ -18,6 +19,7 @@ func (tk TokenKind) String() string {
 		"TkIDENT",
 		"TkRETURN",
 		"TkIF",
+		"TkELSE",
 		"TkEOF",
 	}[tk]
 }

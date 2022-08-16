@@ -60,4 +60,8 @@ assert 10 "five=5;result=five*2; return result;"
 assert 10 "return 10; return 100;"
 assert 20 "if ( 8 > 2 ) return 20; return 10;"
 assert 10 "if ( 2 > 8 ) return 20; return 10;"
+assert 20 "if ( 8 > 2 ) return 20; else return 10;"
+assert 10 "if ( 8 < 2 ) return 20; else return 10;"
+assert 10 "if ( 8==8 ) return 10;"
+assert 2 "cond = 2; if ( cond == 1 ) return 1; else if ( cond == 2 ) return 2; else return 3;"
 echo OK

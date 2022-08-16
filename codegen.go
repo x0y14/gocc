@@ -88,7 +88,7 @@ func Gen(node *Node) {
 		// gotoに使用するラベルを生成
 		ifLabel := label()
 		// 条件式を生成
-		Gen(node.lhs)
+		Gen(node.cond)
 		// 条件式の結果を取り出す
 		// x8 = [sp]; sp+=16
 		fmt.Println("  ldr x8, [sp], #16")
@@ -96,9 +96,40 @@ func Gen(node *Node) {
 		fmt.Println("  cmp x8, 0")
 		fmt.Printf("  b.eq %s\n", ifLabel)
 		// trueだった場合のコードを生成
-		Gen(node.rhs)
+		Gen(node.lhs)
 		// falseだった場合のジャンプ先
 		fmt.Printf("%s:\n", ifLabel)
+		return
+	case NdIFELSE:
+		// * 上から順に実行される
+		//  if (A == 0)
+		//    goto els;
+		//  B;
+		//  goto end;
+		//els:
+		//  C;
+		//end:
+
+		// if (A) B else C
+		// Aがfalseの場合、Cを実行するためジャンプするのに使用
+		elseLabel := label()
+		// Aがtrueだった場合、Bを実行した後終了地点に移動するために使用
+		endLabel := label()
+		// 条件式を生成
+		Gen(node.cond)
+		// 条件式の結果をスタックから取り出す
+		// x8 = [sp]; sp+=16
+		fmt.Println("  ldr x8, [sp], #16")
+		// (x8 == 0)
+		fmt.Println("  cmp x8, #0")
+		// true: goto else C
+		fmt.Printf("  b.eq %s\n", elseLabel)
+		// false: B goto end
+		Gen(node.lhs)
+		fmt.Printf("  b %s\n", endLabel)
+		fmt.Printf("%s:\n", elseLabel)
+		Gen(node.rhs)
+		fmt.Printf("%s:\n", endLabel)
 		return
 	}
 

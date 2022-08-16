@@ -8,7 +8,7 @@
 program    = stmt*
 stmt       = expr ";"
            | "return" expr ";"
-           | "if" "(" expr ")" stmt
+           | "if" "(" expr ")" stmt ("else" stmt)?
 expr       = assign
 assign     = equality ("=" assign)?
 equality   = relational ("==" relational | "!=" relational)*

@@ -19,5 +19,7 @@ const (
 	NdLVAR // Local VAR
 
 	NdRETURN
-	NdIF
+	NdIF     // 条件, trueの場合の式...?
+	NdIFELSE // 条件, trueの場合, falseの場合
+
 )

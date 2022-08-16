@@ -11,6 +11,10 @@ import (
 var userInput []rune
 var p int
 
+var (
+	longOps = []string{"==", "!=", "<=", ">="}
+)
+
 func getRunes(len int) []rune {
 	var current []rune
 	for i := 0; i < len; i++ {
@@ -86,17 +90,18 @@ func Tokenize(r []rune) *Token {
 	cur := &head
 
 	// while (*p)
+userInputLoop:
 	for p < len(r) {
 		if unicode.IsSpace(userInput[p]) {
 			p++
 			continue
 		}
 
-		for _, longOp := range []string{"==", "!=", "<=", ">="} {
+		for _, longOp := range longOps {
 			if startWith(longOp) {
 				p += 2
 				cur = NewToken(TkRESERVED, cur, []rune(longOp), 2)
-				continue
+				continue userInputLoop
 			}
 		}
 
@@ -126,6 +131,12 @@ func Tokenize(r []rune) *Token {
 			continue
 		}
 
+		if startWithAndAfterIsNotAlnum("else") {
+			cur = NewToken(TkELSE, cur, []rune("else"), 4)
+			p += 4
+			continue
+		}
+
 		// 数字から始まることはない
 		if ('a' <= userInput[p] && userInput[p] <= 'z') ||
 			('A' <= userInput[p] && userInput[p] <= 'Z') || '_' == userInput[p] {
@@ -134,7 +145,7 @@ func Tokenize(r []rune) *Token {
 			continue
 		}
 
-		errorAt("パースできません")
+		errorAt("トークナイズできません")
 
 	}
 

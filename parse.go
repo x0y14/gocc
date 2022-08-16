@@ -87,10 +87,18 @@ func stmt() *Node {
 	case consumeKeyword(TkIF):
 		expect("(")
 		// 条件式
-		node = expr()
+		// A
+		cond := expr()
 		expect(")")
-		// then
-		node = NewNode(NdIF, node, stmt())
+		b := stmt()
+		if consumeKeyword(TkELSE) {
+			// if (A) B else C
+			c := stmt()
+			node = NewNodeWithExpr(NdIFELSE, nil, cond, nil, b, c)
+		} else {
+			// if (A) B
+			node = NewNodeWithExpr(NdIF, nil, cond, nil, b, nil)
+		}
 	default:
 		node = expr()
 		expect(";")

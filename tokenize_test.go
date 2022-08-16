@@ -46,7 +46,7 @@ func TestTokenize(t *testing.T) {
 		},
 		{
 			"error2",
-			"1*21-123+324#34/44",
+			"if ( 1 == 1 ) return 1;",
 			nil,
 		},
 	}
