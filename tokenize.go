@@ -11,10 +11,6 @@ import (
 var userInput []rune
 var p int
 
-var (
-	longOps = []string{"==", "!=", "<=", ">="}
-)
-
 func getRunes(len int) []rune {
 	var current []rune
 	for i := 0; i < len; i++ {
@@ -97,10 +93,10 @@ userInputLoop:
 			continue
 		}
 
-		for _, longOp := range longOps {
+		for _, longOp := range []string{"==", "!=", "<=", ">=", "&&", "||"} {
 			if startWith(longOp) {
-				p += 2
-				cur = NewToken(TkRESERVED, cur, []rune(longOp), 2)
+				p += len(longOp)
+				cur = NewToken(TkRESERVED, cur, []rune(longOp), len(longOp))
 				continue userInputLoop
 			}
 		}

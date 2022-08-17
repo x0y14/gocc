@@ -8,10 +8,12 @@ const (
 	NdMUL        // *
 	NdDIV        // /
 
-	NdEQ // ==
-	NdNE //!=
-	NdLT // <
-	NdLE // <=
+	NdEQ  // ==
+	NdNE  //!=
+	NdLT  // <
+	NdLE  // <=
+	NdAND // &&
+	NdOR  // ||
 
 	NdASSIGN // =
 

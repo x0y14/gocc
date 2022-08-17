@@ -145,11 +145,24 @@ func expr() *Node {
 }
 
 func assign() *Node {
-	node := equality()
+	node := andor()
 	if consume("=") {
-		return NewNode(NdASSIGN, node, equality())
+		return NewNode(NdASSIGN, node, andor())
 	}
 	return node
+}
+
+func andor() *Node {
+	node := equality()
+	for {
+		if consume("&&") {
+			node = NewNode(NdAND, node, equality())
+		} else if consume("||") {
+			node = NewNode(NdOR, node, equality())
+		} else {
+			return node
+		}
+	}
 }
 
 func equality() *Node {

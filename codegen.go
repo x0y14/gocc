@@ -289,7 +289,7 @@ func Gen(node *Node) {
 
 		// Conditional Select Increment は、条件が TRUE の場合、
 		// デスティネーション レジスタに最初のソース レジスタの値を返し、それ以外の場合は、1 だけインクリメントされた 2 番目のソース レジスタの値を返します。
-		//        subs    x8, x8, x9 -> x9 = x8 - x9; xzr = {0|1}?
+		//        subs    x8, x8, x9 -> x8 = x8 - x9; xzr = {0|1}?
 		//        cset    x8, eq -> eq:z==1, if (xzr==1) x8 = 1 else x8 = 0
 		//        and     x8, x8, #0x1 x8 = x8 == 1
 		fmt.Println("  subs x8, x8, x9")
@@ -320,6 +320,14 @@ func Gen(node *Node) {
 		fmt.Println("  subs x8, x8, x9")
 		fmt.Println("  cset x8, le")
 		fmt.Println("  and x8, x8, #0x01")
+	case NdAND:
+		// x8に左辺の結果、x9に右辺の結果が入っている
+		// x8 = x8 && x9
+		fmt.Println("  and x8, x8, x9")
+	case NdOR:
+		// x8に左辺の結果、x9に右辺の結果が入っている
+		// x8 = x8 || x9
+		fmt.Println("  orr x8, x8, x9")
 	case NdNUM:
 		log.Fatalf("記号ではなく数字トークンを発見しました")
 	}
