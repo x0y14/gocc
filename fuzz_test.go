@@ -45,8 +45,8 @@ func TestSingleIdent(t *testing.T) {
 
 }
 
-func TestGenFUzzBuzz(t *testing.T) {
-	fuzzBuzz := func(i int) int {
+func TestGenFizzBuzz(t *testing.T) {
+	fizzBuzz := func(i int) int {
 		if i%15 == 0 {
 			return 0
 		}
@@ -59,7 +59,7 @@ func TestGenFUzzBuzz(t *testing.T) {
 		return 3
 	}
 	for i := 0; i < 100; i++ {
-		ok := assert.Equal(t, fuzzBuzz(i), ExecAndGetExitCode(compiler, GenFUzzBuzz(i)))
+		ok := assert.Equal(t, fizzBuzz(i), ExecAndGetExitCode(compiler, GenFizzBuzz(i)))
 		if ok {
 			fmt.Printf("[OK] %d\n", i)
 		} else {

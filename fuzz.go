@@ -58,8 +58,8 @@ func GenSingleIdentStmt() (int, string) {
 	return result, fmt.Sprintf("%s%s;", s, r)
 }
 
-// GenFUzzBuzz return 15x: 0, 3x: 1, 5x: 2, else: 3
-func GenFUzzBuzz(in int) string {
+// GenFizzBuzz return 15x: 0, 3x: 1, 5x: 2, else: 3
+func GenFizzBuzz(in int) string {
 	src := fmt.Sprintf("i = %d;", in)
 	// 15
 	src += "if ( ((i/15)*15) == i ) { return 0; }"
