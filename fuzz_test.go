@@ -1,6 +1,7 @@
 package gocc
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"log"
 	"math/rand"
@@ -42,4 +43,27 @@ func TestSingleIdent(t *testing.T) {
 		assert.Equal(t, want, exitCode)
 	}
 
+}
+
+func TestGenFUzzBuzz(t *testing.T) {
+	fuzzBuzz := func(i int) int {
+		if i%15 == 0 {
+			return 0
+		}
+		if i%3 == 0 {
+			return 1
+		}
+		if i%5 == 0 {
+			return 2
+		}
+		return 3
+	}
+	for i := 0; i < 100; i++ {
+		ok := assert.Equal(t, fuzzBuzz(i), ExecAndGetExitCode(compiler, GenFUzzBuzz(i)))
+		if ok {
+			fmt.Printf("[OK] %d\n", i)
+		} else {
+			fmt.Printf("[FAIL] %d\n", i)
+		}
+	}
 }
