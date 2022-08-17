@@ -112,22 +112,27 @@ func stmt() *Node {
 		if !consume(";") {
 			init = expr()
 			expect(";")
-		} else {
-			expect(";")
 		}
 		if !consume(";") {
 			cond = expr()
-			expect(";")
-		} else {
 			expect(";")
 		}
 		if !consume(")") {
 			loop = expr()
 			expect(")")
-		} else {
-			expect(")")
 		}
 		node = NewNodeWithExpr(NdFOR, init, cond, loop, stmt(), nil)
+	case consume("{"):
+		var nodesInBlock []*Node
+	eofLoop:
+		for !atEof() {
+			if consume("}") {
+				break eofLoop
+			}
+			nodesInBlock = append(nodesInBlock, stmt())
+		}
+		//nodesInBlock = append(nodesInBlock, nil)
+		node = NewNodeBlock(nodesInBlock)
 	default:
 		node = expr()
 		expect(";")

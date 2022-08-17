@@ -9,9 +9,9 @@ assert() {
 	actual="$?"
 
 	if [ "$actual" = "$expected" ]; then
-		echo "$input => $actual"
+		echo "[OK] $input => $actual"
 	else
-		echo "$input => $expected expected, but got $actual"
+		echo "[FAIL] $input => $expected expected, but got $actual"
 		exit 1
 	fi
 }
@@ -67,4 +67,18 @@ assert 2 "cond = 2; if ( cond == 1 ) return 1; else if ( cond == 2 ) return 2; e
 assert 10 "i=0; while ( i<10 ) i=i+1; return i;"
 assert 2 "x=2; while(x ==1) x=x+1; return x;"
 assert 10 "total = 0; for (i=0;i<5;i=i+1) total = total + i; return total;"
+assert 10 "{ return 10; }"
+assert 20 "result = 0; if ( 1 > 0 ) { result = 10; result = result * 2; } else { result = 30; } return result;"
+assert 100 "count = 0; result = 0; while( count < 10 ) { result = result + 10; count = count + 1; } return result;"
+assert 50 "result = 0; for(i=0; i<5; i=i+1) { result = result + 10; } return result;"
+assert 5 "
+result = 0;
+for (;;) {
+  if (result > 4) {
+    return result;
+  }
+  result = result + 1;
+}
+return result;
+"
 echo OK

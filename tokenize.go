@@ -105,7 +105,7 @@ userInputLoop:
 			}
 		}
 
-		if strings.ContainsRune("+-*/()=<>!;", userInput[p]) {
+		if strings.ContainsRune("{}+-*/()=<>!;", userInput[p]) {
 			cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
 			p++
 			continue

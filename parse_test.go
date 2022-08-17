@@ -43,6 +43,16 @@ func TestParse(t *testing.T) {
 				nil,
 			},
 		},
+		{
+			name:  "block",
+			token: Tokenize([]rune("{return 10;}")),
+			expect: []*Node{
+				NewNodeBlock([]*Node{
+					NewNode(NdRETURN, NewNodeNum(10), nil),
+				}),
+				nil,
+			},
+		},
 	}
 
 	for _, tt := range tests {

@@ -23,4 +23,6 @@ const (
 	NdIFELSE //
 	NdWHILE
 	NdFOR
+
+	NdBLOCK // "{" stmt* "}"
 )

@@ -200,26 +200,42 @@ func Gen(node *Node) {
 		endLabel := label()
 		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
 		// A
-		Gen(node.init)
+		if node.init != nil {
+			Gen(node.init)
+		}
 		// begin:
 		fmt.Printf("%s:\n", beginLabel)
 		// B
-		Gen(node.cond)
-		// pop x8
-		// x8 = [sp]; sp+=16
-		fmt.Println("  ldr x8, [sp], #16")
-		// cmp x8, 0
-		fmt.Println("  cmp x8, 0")
-		// b.eq end
-		fmt.Printf("  b.eq %s\n", endLabel)
+		if node.cond != nil {
+			Gen(node.cond)
+			// pop x8
+			// x8 = [sp]; sp+=16
+			fmt.Println("  ldr x8, [sp], #16")
+			// cmp x8, 0
+			fmt.Println("  cmp x8, 0")
+			// b.eq end
+			fmt.Printf("  b.eq %s\n", endLabel)
+		}
+
 		// D
 		Gen(node.lhs)
 		// C
-		Gen(node.loop)
+		if node.loop != nil {
+			Gen(node.loop)
+		}
 		// b begin
 		fmt.Printf("  b %s\n", beginLabel)
 		// end:
 		fmt.Printf("%s:\n", endLabel)
+		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
+		return
+	case NdBLOCK:
+		// code = [stmt, stmt, stmt, ...]
+		mark := randomString(10)
+		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
+		for _, c := range node.code {
+			Gen(c)
+		}
 		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
 		return
 	}

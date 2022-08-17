@@ -9,6 +9,7 @@ type Node struct {
 	rhs    *Node // 右辺
 	val    int   // NdNUMの場合、数値が入る
 	offset int   // NdLVALの場合、FramePointerからどれだけ離れた位置のスタックにデータが格納されているかが入る
+	code   []*Node
 }
 
 func NewNode(kind NodeKind, lhs *Node, rhs *Node) *Node {
@@ -32,6 +33,12 @@ func NewNodeWithExpr(Kind NodeKind, init, cond, loop, lhs, rhs *Node) *Node {
 		val:    0,
 		offset: 0,
 	}
+}
+
+func NewNodeBlock(code []*Node) *Node {
+	return &Node{
+		kind: NdBLOCK,
+		code: code}
 }
 
 func NewNodeNum(val int) *Node {
