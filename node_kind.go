@@ -19,6 +19,7 @@ const (
 
 	NdNUM  // 数字
 	NdLVAR // Local VAR
+	NdCALL
 
 	NdRETURN
 	NdIF     //

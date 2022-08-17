@@ -2,13 +2,14 @@ package gocc
 
 type Node struct {
 	kind   NodeKind
-	init   *Node // for (A;B;C)のA
-	cond   *Node // for (A;B;C)、while (B)
-	loop   *Node // for (A;B;C;)のC
-	lhs    *Node // 左辺
-	rhs    *Node // 右辺
-	val    int   // NdNUMの場合、数値が入る
-	offset int   // NdLVALの場合、FramePointerからどれだけ離れた位置のスタックにデータが格納されているかが入る
+	init   *Node  // for (A;B;C)のA
+	cond   *Node  // for (A;B;C)、while (B)
+	loop   *Node  // for (A;B;C;)のC
+	lhs    *Node  // 左辺
+	rhs    *Node  // 右辺
+	val    int    // NdNUMの場合、数値が入る
+	offset int    // NdLVALの場合、FramePointerからどれだけ離れた位置のスタックにデータが格納されているかが入る
+	label  string // NdCALLの場合、関数の名前（ラベル）が入る
 	code   []*Node
 }
 
@@ -52,5 +53,14 @@ func NewNodeLVar(offset int) *Node {
 	return &Node{
 		kind:   NdLVAR,
 		offset: offset,
+	}
+}
+
+func NewNodeCALL(functionName []rune) *Node {
+	// 数のラベルはprefixとして"_"がつく。
+	// なお外部から呼ばれる場合は .global ${label} する必要がある
+	return &Node{
+		kind:  NdCALL,
+		label: "_" + string(functionName),
 	}
 }

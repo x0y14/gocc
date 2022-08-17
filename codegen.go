@@ -54,6 +54,7 @@ func Gen(node *Node) {
 		fmt.Printf("  mov x8, #%d\n", node.val)
 		// x8をspから始まるスタック領域に書き込む
 		// str: store
+		// [sp] = x8
 		fmt.Println("  str x8, [sp]")
 		return
 	case NdLVAR:
@@ -236,6 +237,17 @@ func Gen(node *Node) {
 		for _, c := range node.code {
 			Gen(c)
 		}
+		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
+		return
+	case NdCALL:
+		mark := randomString(5)
+		fmt.Println(comment(fmt.Sprintf("start #%s", mark)))
+		fmt.Printf("  b %s\n", node.label)
+
+		// w0:x0に結果が入っているので、取り出してスタックに保存
+		fmt.Println("  str x0, [sp, #-16]!")
+		fmt.Println("  ldr x8, [sp]")
+
 		fmt.Println(comment(fmt.Sprintf("end #%s", mark)))
 		return
 	}

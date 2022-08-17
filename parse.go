@@ -237,7 +237,19 @@ func primary() *Node {
 		return node
 	}
 	if identToken := consumeIdent(); identToken != nil {
+		// f() : call function
+		// f   : ident
+		// のパターンがある
 		var node *Node
+
+		// 関数
+		if consume("(") {
+			node = NewNodeCALL(identToken.str)
+			expect(")")
+			return node
+		}
+
+		// 変数
 		lVar := findLocalVariable(identToken)
 		if lVar != nil {
 			// すでに宣言されているので、どこにデータが入っているのかというデータをもつノードを

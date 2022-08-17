@@ -16,6 +16,27 @@ assert() {
 	fi
 }
 
+assert_lib() {
+  lib="$1"
+  expected="$2"
+  input="$3"
+
+ 	./bin/gocc "$input" > ./bin/tmp.s
+ 	cc -w -o ./bin/lib.s -S "$lib"
+ 	cc -o ./bin/tmp ./bin/tmp.s ./bin/lib.s
+ 	./bin/tmp
+ 	actual="$?"
+
+ 	if [ "$actual" = "$expected" ]; then
+ 		echo "[OK] $input => $actual"
+ 	else
+ 		echo "[FAIL] $input => $expected expected, but got $actual"
+ 		exit 1
+ 	fi
+}
+
+
+
 assert 0 "return 0;"
 assert 42 "return 42;"
 
@@ -90,5 +111,7 @@ assert 2 "if ( 1==1 && 2 != 3) {return 2;} else {return 1;}"
 assert 3 "if (( (1==1) && (2==2) )|| (1==0)) {return 3;} else {return 100;}"
 assert 1 "return (1==1||0==1);"
 assert 0 "return (1==1&&0==1);"
+
+assert_lib "./lib/foo.c" 4 "three = foo(); return 0;" # ccでビルドしたライブラリの戻り値はw0に保存されるため現状取り出せない
 
 echo OK
