@@ -45,13 +45,14 @@ func main() {
 	// 16Nづつ動かす
 	fmt.Println("  sub sp, sp, #16")
 	fmt.Println("  str wzr, [sp]")
+	fmt.Println()
 
-	fmt.Println("  sub sp, sp, #16")
-	fmt.Println("  str x29, [sp]")
-
-	fmt.Println("  mov x29, sp")
-
-	fmt.Printf("  sub sp, sp, #%d\n", 26*16)
+	//fmt.Println("  sub sp, sp, #16")
+	//fmt.Println("  str x29, [sp]")
+	//
+	//fmt.Println("  mov x29, sp")
+	//
+	//fmt.Printf("  sub sp, sp, #%d\n", 26*16)
 
 	// nodeをたどってコードを生成する
 	for _, node := range code {
@@ -63,6 +64,11 @@ func main() {
 			//fmt.Println("  add sp, sp, #16")
 		}
 	}
+
+	for _, asm := range gocc.Assembly {
+		fmt.Println(asm.String())
+	}
+
 	// epilogue
 
 	// w0はプログラムの結果として使用されるレジスタ
