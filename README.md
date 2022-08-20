@@ -8,6 +8,7 @@
 - [arm developer](https://developer.arm.com/documentation/102374/latest/)
 - [Overview of ARM64 ABI conventions](https://docs.microsoft.com/en-us/cpp/build/arm64-windows-abi-conventions?view=msvc-170)
 - [modexp](https://modexp.wordpress.com/2018/10/30/arm64-assembly/)
+- https://stackoverflow.com/questions/66098678/understanding-aarch64-assembly-function-call-how-is-stack-operated
 
 [条件分岐に使用するeq,neなどの一覧](https://www.mztn.org/dragon/arm6408cond.html#suffix)
 
