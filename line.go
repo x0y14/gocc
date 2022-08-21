@@ -3,6 +3,7 @@ package gocc
 import (
 	"fmt"
 	"golang.org/x/exp/utf8string"
+	"runtime"
 	"strings"
 	"unicode/utf8"
 )
@@ -88,27 +89,33 @@ func NewComment(comment string) *Line {
 
 func (l *Line) String() string {
 	var str string
-	switch l.Kind {
-	case SourceCode:
-		whiteWidth := (maxBodyWidth + blockWidth) - (utf8.RuneCountInString(l.Body) + utf8.RuneCountInString(l.Comment) + 2) // utf8.RuneCountInString("; ") == 2
-		str = fmt.Sprintf("%s%s; %s", l.Body, strings.Repeat(" ", whiteWidth), l.Comment)
-	case Comment:
-		str = "; " + l.Comment
-	case Separator:
-		str = fmt.Sprintf("; %s %s", l.BlockId, strings.Repeat(l.BlockSeparator, l.Nest))
-	}
+	if runtime.GOOS == "darwin" {
+		switch l.Kind {
+		case SourceCode:
+			whiteWidth := (maxBodyWidth + blockWidth) - (utf8.RuneCountInString(l.Body) + utf8.RuneCountInString(l.Comment) + 2) // utf8.RuneCountInString("; ") == 2
+			str = fmt.Sprintf("%s%s; %s", l.Body, strings.Repeat(" ", whiteWidth), l.Comment)
+		case Comment:
+			str = "; " + l.Comment
+		case Separator:
+			str = fmt.Sprintf("; %s %s", l.BlockId, strings.Repeat(l.BlockSeparator, l.Nest))
+		}
 
-	if l.Nest == 1 && l.Kind == Separator {
-		str += strings.Repeat("=", (maxBodyWidth+blockWidth)-utf8.RuneCountInString(str)) + " +"
-	} else if l.Kind == SourceCode {
-		str += " |"
+		if l.Nest == 1 && l.Kind == Separator {
+			str += strings.Repeat("=", (maxBodyWidth+blockWidth)-utf8.RuneCountInString(str)) + " +"
+		} else if l.Kind == SourceCode {
+			str += " |"
+		} else {
+			if utf8string.NewString(str).IsASCII() {
+				str += strings.Repeat(" ", (maxBodyWidth+blockWidth)-utf8.RuneCountInString(str)) + " |"
+			}
+		}
+
+		str += strings.Repeat("\n", l.ExtendNL)
 	} else {
-		if utf8string.NewString(str).IsASCII() {
-			str += strings.Repeat(" ", (maxBodyWidth+blockWidth)-utf8.RuneCountInString(str)) + " |"
+		switch l.Kind {
+		case SourceCode:
+			str = l.Body
 		}
 	}
-
-	str += strings.Repeat("\n", l.ExtendNL)
-
 	return str
 }

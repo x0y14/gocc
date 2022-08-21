@@ -6,6 +6,7 @@ COPY go.sum ./
 RUN go mod download
 
 COPY cmd ./cmd
+COPY lib ./lib
 COPY *.go ./
 
 COPY Makefile ./
