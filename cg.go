@@ -3,6 +3,7 @@ package gocc
 import (
 	"fmt"
 	"runtime"
+	"time"
 )
 
 var lines []*Line
@@ -442,6 +443,7 @@ func gen(node *Node) {
 
 func Generate(nodes []*Node) string {
 	// prologue
+	comment(fmt.Sprintf("compiled at %s", time.Now().String()))
 	text()
 	align(2)
 

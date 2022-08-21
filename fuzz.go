@@ -20,7 +20,7 @@ func GenSingleIdentStmt() (int, string) {
 		s = ""
 		r = ""
 
-		for i := 0; i < 26; i++ {
+		for i := 0; i < 22; i++ {
 			op := rand.Intn(3)
 			val := rand.Intn(11)
 
@@ -55,7 +55,7 @@ func GenSingleIdentStmt() (int, string) {
 
 	}
 
-	return result, fmt.Sprintf("%s%s;", s, r)
+	return result, fmt.Sprintf("{%s return %s;}", s, r)
 }
 
 // GenFizzBuzz return 15x: 0, 3x: 1, 5x: 2, else: 3
