@@ -11,7 +11,7 @@ var labelCounter int
 var nest int
 var Assembly []*Line
 
-const separator = " - * - "
+const separator = " - "
 
 func init() {
 	labelCounter = 0
@@ -51,6 +51,8 @@ func genLVal(node *Node) {
 		log.Fatalf("代入の左辺値が変数ではありません")
 	}
 
+	write(NewComment("変数のアドレスを取得する"))
+
 	// x8にフレームポインタを保存
 	write(NewSrcLine("  mov x8, x29", "x8 = x29"))
 	// １文字変数の位置分スタックを移動
@@ -72,6 +74,7 @@ func Gen(node *Node) {
 	switch node.kind {
 	case NdNUM:
 		write(NewComment(node.kind.String()))
+		write(NewComment("即値を一度レジスタに格納してからスタックにpushする"))
 		write(NewSrcLine("  sub sp, sp, #16", "sp-=16"))
 		write(NewSrcLine(fmt.Sprintf("  mov x8, #%d", node.val), "x8 = val"))
 		// x8をspから始まるスタック領域に書き込む
@@ -82,6 +85,7 @@ func Gen(node *Node) {
 		write(NewComment(node.kind.String()))
 		genLVal(node)
 
+		write(NewComment("変数として場所を与えられたアドレスから値を取り出す"))
 		// 変数のデータはスタックのどこに書き込まれるのか取得
 		write(NewSrcLine("  ldr x8, [sp], #16", "x8 = [sp], sp+=16"))
 		// どこに書き込まれるのかというのをアドレスとして読み込みx8に書き込まれた内容を読み込む
@@ -95,6 +99,7 @@ func Gen(node *Node) {
 		genLVal(node.lhs)
 		Gen(node.rhs)
 
+		write(NewComment("x9, x8の順にスタックからpopしてx8のデータをアドレスとしてx9のデータを割り当てる"))
 		// スタックからデータを読み込みx9へ。変数に代入するデータ。
 		write(NewSrcLine("  ldr x9, [sp], #16", "x9 = [sp], sp+=16"))
 		// スタックからデータを読み込みx8へ。変数のオフセット。
@@ -109,13 +114,11 @@ func Gen(node *Node) {
 		write(NewComment(node.kind.String()))
 		Gen(node.lhs)
 
+		write(NewComment("計算結果をpopしてx0に代入し、戻り値とする"))
 		// 最終的な計算結果はスタックに保存されているので取り出す
-		write(NewSrcLine("  ldr x8, [sp]", "x8 = [sp]"))
-		// 最終的な計算結果の保存に使用したスタック分spを戻してあげる
-		write(NewSrcLine("  add sp, sp, #16", "sp+=16"))
+		write(NewSrcLine("  ldr x8, [sp], #16", "x8 = [sp], #16"))
 		write(NewSrcLine("  mov x0, x8", "x0 = x8"))
-		// 一番最初にxzrを書き込んだ分のspを戻す
-		write(NewSrcLine("  add sp, sp, #16", "sp+=16"))
+		write(NewSrcLine("  ldp x29, x30, [sp], #32; epilogue", ""))
 		// 終了
 		write(NewSrcLine("  ret", ""))
 		return
@@ -297,8 +300,8 @@ func Gen(node *Node) {
 		//   stmt
 		// }
 
-		for _, c := range node.code {
-			write(NewComment(fmt.Sprintf("the child of %s", mark)))
+		for i, c := range node.code {
+			write(NewComment(fmt.Sprintf("(%d) the child of %s", i, mark)))
 			Gen(c)
 		}
 		return
@@ -306,16 +309,14 @@ func Gen(node *Node) {
 	case NdCALL:
 		write(NewComment(node.kind.String()))
 
+		write(NewComment("関数を呼び出す"))
 		// 関数ラベルにジャンプする
-		write(NewSrcLine(fmt.Sprintf("  b %s", node.label), "goto function"))
+		write(NewSrcLine(fmt.Sprintf("  bl %s", node.label), "goto function"))
 
 		// w0:x0に結果が入っているので、取り出してスタックに保存
 		// なぜか結果を取得することができない現象が発生しているのでチェックが必要
 		write(NewSrcLine("  sub sp, sp, #16", "sp-=16"))
 		write(NewSrcLine("  str x0, [sp]", "[sp] = x0"))
-
-		// プログラム全体の終了値として使用されるx0を0に書き換える
-		// 必要か不明
 		write(NewSrcLine("  mov x0, xzr", "x0 = xzr"))
 		return
 	}

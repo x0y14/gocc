@@ -111,7 +111,8 @@ assert 2 "if ( 1==1 && 2 != 3) {return 2;} else {return 1;}"
 assert 3 "if (( (1==1) && (2==2) )|| (1==0)) {return 3;} else {return 100;}"
 assert 1 "return (1==1||0==1);"
 assert 0 "return (1==1&&0==1);"
-
-assert_lib "./lib/foo.c" 4 "three = foo(); return three + 1;" # ccでビルドしたライブラリの戻り値はw0に保存されるため現状取り出せない
+assert_lib "./lib/foo.c" 2 "return foo();"
+assert_lib "./lib/foo.c" 1 "foo(); return 1;"
+assert_lib "./lib/foo.c" 3 "two = foo(); return two + 1;" # ccでビルドしたライブラリの戻り値はw0に保存されるため現状取り出せない
 
 echo OK

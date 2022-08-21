@@ -37,14 +37,8 @@ func main() {
 	fmt.Printf(".global %s\n", mainSymbol)
 	fmt.Printf("%s:\n", mainSymbol)
 
-	// wzr(32bit zero register)をスタックに書き込む
-	// 何をしてるの不明
-	// https://developer.arm.com/documentation/den0024/a/ch05s01s03
-	// コーディングテクニックと書いてある..?
-	// もしかしたら現在地の保存をしているのかもしれない..? -> ただ、参照されている感じがしない
-	// 16Nづつ動かす
-	fmt.Println("  sub sp, sp, #16")
-	fmt.Println("  str wzr, [sp]")
+	fmt.Println("  stp x29, x30, [sp, #-32]!; prologue")
+
 	fmt.Println()
 
 	//fmt.Println("  sub sp, sp, #16")
