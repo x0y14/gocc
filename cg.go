@@ -368,10 +368,20 @@ func gen(node *Node) {
 	case NdBLOCK:
 		comment(node.kind.String())
 
+		// 使用されなかった関数の戻り値をなかったことにするため、ブロックの最初と最後のspを合わせる処理
+		// 今後エラー出たら多分ここが原因
+		spBefore := spRelativePos
 		for i, n := range node.code {
 			comment(fmt.Sprintf("block.%d", i))
 			gen(n)
 		}
+		spAfter := spRelativePos
+		if spBefore != spAfter {
+			n16 := -1 * (spAfter - spBefore)
+			comment(fmt.Sprintf("fix %d", n16))
+			addSp(n16)
+		}
+
 		return
 	case NdCALL:
 		comment(node.kind.String())
