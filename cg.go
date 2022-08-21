@@ -291,7 +291,7 @@ func gen(node *Node) {
 		// true case
 		gen(node.lhs)
 		// elseブロックを読み飛ばす
-		bl(endLabel)
+		b(endLabel)
 
 		// false case
 		defLabel(elseLabel)
@@ -319,7 +319,7 @@ func gen(node *Node) {
 		// true case
 		gen(node.lhs)
 		// ループ先頭へ
-		bl(beginLabel)
+		b(beginLabel)
 
 		defLabel(endLabel)
 		return
@@ -360,7 +360,7 @@ func gen(node *Node) {
 		}
 
 		// ループの最初に戻る
-		bl(beginLabel)
+		b(beginLabel)
 
 		// 条件式がfalseだった場合にループ外に出るために使用
 		defLabel(endLabel)
