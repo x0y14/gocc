@@ -125,6 +125,10 @@ func ldrArs(dest, address string) {
 	addLine(NewSrcLine(fmt.Sprintf("  ldr %s, [%s]", dest, address), ""))
 }
 
+func ldrLabel(dest, label string) {
+	addLine(NewSrcLine(fmt.Sprintf("  ldr %s, %s", dest, label), ""))
+}
+
 // cg “str x8, [sp]“
 func strSt(src string) {
 	addLine(NewSrcLine(fmt.Sprintf("  str %s, [sp]", src), ""))
@@ -150,9 +154,17 @@ func bl(label string) {
 	addLine(NewSrcLine(fmt.Sprintf("  bl %s", label), ""))
 }
 
+func blr(reg string) {
+	addLine(NewSrcLine(fmt.Sprintf("  blr %s", reg), ""))
+}
+
 // cg “ret“
 func ret() {
 	addLine(NewSrcLine("  ret", ""))
+}
+
+func adrReg(dest, label string) {
+	addLine(NewSrcLine(fmt.Sprintf("  adr %s, %s", dest, label), ""))
 }
 
 // cg “add sp, sp, #16“
@@ -386,6 +398,15 @@ func gen(node *Node) {
 		return
 	case NdCALL:
 		comment(node.kind.String())
+
+		//adrReg("x8", node.label)
+		//adrp x0, symbol@PAGE
+		//ldr x1, [x0, symbol@PAGEOFF]
+
+		//write(NewSrcLine(fmt.Sprintf("  adrp x0, %s@PAGE", node.label), ""))
+		////write(NewSrcLine(fmt.Sprintf("  ldr x8, [x0, %s@PAGEOFF", node.label), ""))
+		//write(NewSrcLine(fmt.Sprintf("  add x0, x0, %s@PAGEOFF", node.label), ""))
+		//blr("x0")
 
 		bl(node.label)
 

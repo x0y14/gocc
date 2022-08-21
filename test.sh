@@ -125,8 +125,9 @@ for (i=0; i<10; i=i+1) {
 }
 return 30;"
 assert_lib "./lib/foo.c" 50 "i=0; while(i<10) {i=i+1;} foo(); return 50;"
-assert_lib "./lib/foo.c" 4 "foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo(); return 4;"
+assert_lib "./lib/foo.c" 4 "foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo();foo(); return 4;"
 assert_lib "./lib/foo.c" 5 "return 5;"
 assert_lib "./lib/foo.c" 5 "for (i=0; i<10; i=i+1) { foo(); } return 5;"
 
+assert_lib "./lib/foo.c" 10 "for (i=0;i<100;i=i+1) {foo(); } return 10;"
 echo OK

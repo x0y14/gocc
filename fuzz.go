@@ -9,7 +9,7 @@ import (
 	"os/exec"
 )
 
-func GenSingleIdentStmt() (int, string) {
+func GenStmt() (int, [2]string, map[string]interface{}) {
 	var s string
 	var r string
 	values := map[string]interface{}{}
@@ -24,21 +24,23 @@ func GenSingleIdentStmt() (int, string) {
 			op := rand.Intn(3)
 			val := rand.Intn(11)
 
-			values[string(rune('a'+i))] = val
+			ident := "f" + randomString(3)
+			values[ident] = val
 
-			s += fmt.Sprintf("%s=%d;", string(rune('a'+i)), val)
+			s += fmt.Sprintf("%s=%d;", ident, val)
+
 			if i == 0 {
-				r += string(rune('a' + i))
+				r += ident
 				continue
 			}
 
 			switch op {
-			case 0:
-				r += "+" + string(rune('a'+i))
-			case 1:
-				r += "-" + string(rune('a'+i))
+			case 0, 1:
+				r += " + " + ident
+			//case 1:
+			//	r += " - " + ident
 			case 2:
-				r += "*" + string(rune('a'+i))
+				r += " * " + ident
 			}
 		}
 
@@ -55,7 +57,7 @@ func GenSingleIdentStmt() (int, string) {
 
 	}
 
-	return result, fmt.Sprintf("{%s return %s;}", s, r)
+	return result, [2]string{s, r}, values
 }
 
 // GenFizzBuzz return 15x: 0, 3x: 1, 5x: 2, else: 3
