@@ -24,7 +24,7 @@ func write(l *Line) {
 }
 
 func label() string {
-	l := fmt.Sprintf("__lable_%d", labelCounter)
+	l := fmt.Sprintf(".L%d", labelCounter)
 	labelCounter++
 	return l
 }
@@ -107,7 +107,7 @@ func Gen(node *Node) {
 		// 変数アドレスにデータを書き込む
 		write(NewSrcLine("  str x9, [x8]", "[x8] = x9"))
 		// スタックトップに変数の内容を保存
-		write(NewSrcLine("  str x9, [sp, #-16]!", "sp-=16, [sp] = x9"))
+		//write(NewSrcLine("  str x9, [sp, #-16]!", "sp-=16, [sp] = x9"))
 		return
 
 	case NdRETURN:
