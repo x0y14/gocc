@@ -23,7 +23,8 @@ memo:
 
 ### ebnf
 ```
-program    = stmt*
+program    = toplevel*
+toplevel   = ident "(" (ident ","?)* ")" stmt
 stmt       = expr ";"
            | "return" expr ";"
            | "if" "(" expr ")" stmt ("else" stmt)?

@@ -225,6 +225,8 @@ func defLabel(l string) {
 	addLine(NewSrcLine(l+":", ""))
 }
 
+// genLocalVariable
+// 取得した変数のアドレスをsタックに積む、読み込むときはldrArs
 func genLocalVariable(node *Node) {
 	comment("変数のアドレスを取得する")
 	movR("x8", "x29")
@@ -427,12 +429,11 @@ func gen(node *Node) {
 			gen(n)
 		}
 		spAfter := spRelativePos
-		if spBefore != spAfter {
+		if spAfter < 0 && spBefore != spAfter {
 			n16 := -1 * (spAfter - spBefore)
 			comment(fmt.Sprintf("fix %d", n16))
 			addSp(n16)
 		}
-
 		return
 	case NdCALL:
 		comment(node.kind.String())
@@ -457,9 +458,46 @@ func gen(node *Node) {
 
 		subSp(16)
 		strSt("x0")
+		//movR("x8", "x0")
 
 		// スタックトップに結果を自動的に保存するため、これが使われなかった場合、spだけがずれていく
 		// 型を導入して、使用されなかったらvoid、、、？
+		return
+	case NdFUNCTION:
+		// label
+		defLabel(makeFuncLabel(node.data))
+
+		// save data for restore
+		subSp(32)
+		stpS("x29", "x30")
+
+		// parameters
+		// ident(p1, p2, p3)
+		// parameters are set on x0-x7 regs
+		// x0 = p1
+		// x1 = p2
+		// x3 = p3
+		// we need to convert received parameters to local variables
+		for i, param := range node.arguments {
+			// param = p1, p2, p3, p4, ...
+			// 変数のアドレスを取得しスタックに積む
+			genLocalVariable(param)
+
+			subSp(16)
+			// registerからデータをとってきてスタックに積む
+			strSt(fmt.Sprintf("x%d", i))
+
+			// 中身
+			ldrSt("x9")
+			addSp(16)
+			// 変数のアドレス
+			ldrSt("x8")
+			addSp(16)
+			// 代入
+			strArs("x9", "x8")
+		}
+
+		gen(node.lhs)
 		return
 	}
 
@@ -514,12 +552,14 @@ func Generate(nodes []*Node) string {
 	text()
 	align(2)
 
-	mainLabel := makeFuncLabel("main")
-	global(mainLabel)
-	defLabel(mainLabel)
+	//mainLabel := makeFuncLabel("main")
+	//global(mainLabel)
+	//defLabel(mainLabel)
 
-	subSp(32)
-	stpS("x29", "x30")
+	global(makeFuncLabel("main"))
+
+	//subSp(32)
+	//stpS("x29", "x30")
 
 	// generate assemblies from nodes
 	var src string

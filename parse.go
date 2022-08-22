@@ -2,6 +2,7 @@ package gocc
 
 import (
 	"fmt"
+	"log"
 )
 
 // 現在着目しているトークン
@@ -12,6 +13,12 @@ var locals *LocalVariable
 
 // 構文解析により得られたノード群
 var code []*Node
+
+var toplevelFunctionName string
+
+func init() {
+	toplevelFunctionName = ""
+}
 
 func consume(op string) bool {
 	if token.kind != TkRESERVED ||
@@ -82,9 +89,32 @@ func findLocalVariable(tok *Token) *LocalVariable {
 func program() {
 	for !atEof() {
 		//fmt.Println("no eof")
-		code = append(code, stmt())
+		code = append(code, toplevel())
 	}
 	code = append(code, nil)
+}
+
+// toplevel   = ident "(" (ident ","?)* ")" stmt
+func toplevel() *Node {
+	// function define
+	if ident := consumeIdent(); ident != nil {
+		expect("(")
+
+		toplevelFunctionName = string(ident.str)
+		var args []*Node
+		for !consume(")") {
+			args = append(args, expr())
+			if !consume(",") {
+				expect(")")
+				break
+			}
+		}
+		//toplevelFunctionName = ""
+		return NewNodeFunction(ident.str, args, stmt())
+	}
+
+	log.Fatalf("unsupported token on toplevel: %s", token.kind.String())
+	return nil
 }
 
 func stmt() *Node {
@@ -267,6 +297,11 @@ func primary() *Node {
 		}
 
 		// 変数
+		// 関数間で変数名が被らないようにするスコープ機能
+		// 変数の先頭に関数の名前をつけてあげる
+		identToken.str = append([]rune(toplevelFunctionName+"_"), identToken.str...)
+		identToken.len = len(identToken.str)
+
 		lVar := findLocalVariable(identToken)
 		if lVar != nil {
 			// すでに宣言されているので、どこにデータが入っているのかというデータをもつノードを
