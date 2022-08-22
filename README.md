@@ -1,6 +1,9 @@
 [![CI](https://github.com/x0y14/gocc/actions/workflows/ci.yml/badge.svg)](https://github.com/x0y14/gocc/actions/workflows/ci.yml)
+[![Build Status](https://app.bitrise.io/app/0369090a43b51991/status.svg?token=XUSUt5qB32X3J5Gnq3aEOA&branch=main)](https://app.bitrise.io/app/0369090a43b51991)  
 
-[aarch64向け9ccのc実装(未完成)](https://github.com/x0y14/9cc)のgo再実装  
+# gocc
+a toy c compiler for macOS(m1) written in go.  
+[macOS向け9ccのc実装(未完成)](https://github.com/x0y14/9cc)のgo再実装  
 
 参考:
 - [低レイヤを知りたい人のためのCコンパイラ作成入門](https://www.sigbus.info/compilerbook)
