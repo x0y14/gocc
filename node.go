@@ -9,6 +9,7 @@ type Node struct {
 	rhs       *Node  // 右辺
 	val       int    // NdNUMの場合、数値が入る
 	offset    int    // NdLVALの場合、FramePointerからどれだけ離れた位置のスタックにデータが格納されているかが入る
+	data      string // NdSTRINGの場合、文字列が入る
 	label     string // NdCALLの場合、関数の名前（ラベル）が入る
 	code      []*Node
 	arguments []*Node
@@ -47,6 +48,13 @@ func NewNodeNum(val int) *Node {
 	return &Node{
 		kind: NdNUM,
 		val:  val,
+	}
+}
+
+func NewNodeString(data []rune) *Node {
+	return &Node{
+		kind: NdSTRING,
+		data: string(data),
 	}
 }
 

@@ -91,6 +91,15 @@ func TestParse(t *testing.T) {
 				nil,
 			},
 		},
+		{
+			name:  "string",
+			token: Tokenize([]rune("name=\"john\"; return 45;")),
+			expect: []*Node{
+				NewNode(NdASSIGN, NewNodeLVar(16), NewNodeString([]rune("john"))),
+				NewNode(NdRETURN, NewNodeNum(45), nil),
+				nil,
+			},
+		},
 	}
 
 	for _, tt := range tests {

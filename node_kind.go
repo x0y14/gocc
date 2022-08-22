@@ -28,6 +28,7 @@ const (
 	NdFOR
 
 	NdBLOCK // "{" stmt* "}"
+	NdSTRING
 )
 
 var nodeKinds = [...]string{
@@ -51,6 +52,7 @@ var nodeKinds = [...]string{
 	NdWHILE:  "NdWHILE",
 	NdFOR:    "NdFOR",
 	NdBLOCK:  "NdBLOCK",
+	NdSTRING: "NdSTRING",
 }
 
 func (n NodeKind) String() string {

@@ -38,4 +38,6 @@ unary      = ("+" | "-")? primary
 primary    = num
            | ident ("(" (expr ","?)* ")")?
            | "(" expr ")"
+           | """ ascii* """
+ascii      = (0x21 - 0x7E)
 ```

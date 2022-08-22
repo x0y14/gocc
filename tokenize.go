@@ -75,6 +75,21 @@ func strToIdent() []rune {
 	return ident
 }
 
+func str() []rune {
+	var s []rune
+	for p < len(userInput) {
+		//if userInput[p] < unicode.MaxASCII && unicode.IsGraphic(userInput[p]) {
+		//}
+		if userInput[p] == '"' {
+			break
+		} else {
+			s = append(s, userInput[p])
+			p++
+		}
+	}
+	return s
+}
+
 func errorAt(text string) {
 	log.Fatalf("\n%s\n%s^ %s", string(userInput), strings.Repeat(" ", p), text)
 }
@@ -150,6 +165,21 @@ userInputLoop:
 			('A' <= userInput[p] && userInput[p] <= 'Z') || '_' == userInput[p] {
 			ident := strToIdent()
 			cur = NewToken(TkIDENT, cur, ident, len(ident))
+			continue
+		}
+
+		// string
+		if userInput[p] == '"' {
+			// "
+			cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
+			p++
+
+			string_ := str()
+			cur = NewToken(TkSTRING, cur, string_, len(string_))
+
+			// "
+			cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
+			p++
 			continue
 		}
 

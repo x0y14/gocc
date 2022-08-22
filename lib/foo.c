@@ -23,3 +23,9 @@ int addABC(int a, int b, int c) {
 void wprintf(char *c) {
     printf("%s", c);
 }
+
+void forloop() {
+    for (int i = 0; i<3; i++) {
+        printf("%d\n", i);
+    }
+}

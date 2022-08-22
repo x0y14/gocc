@@ -9,11 +9,15 @@ import (
 var lines []*Line
 var spRelativePos int
 var localLabelCount int
+var stringLabelCount int
+var defStrings []*DefString
 
 func init() {
 	lines = []*Line{}
 	spRelativePos = 0
 	localLabelCount = 0
+	stringLabelCount = 0
+	defStrings = []*DefString{}
 }
 
 func addLine(l *Line) {
@@ -179,6 +183,16 @@ func subSp(val int) {
 	spRelativePos -= val
 }
 
+func adrpPage(reg string, label string) {
+	//	adrp	x0, l_.str@PAGE
+	addLine(NewSrcLine(fmt.Sprintf("  adrp %s, %s@PAGE", reg, label), ""))
+}
+
+func addPageOFF(dest, src, label string) {
+	//add	x0, x0, l_.str@PAGEOFF
+	addLine(NewSrcLine(fmt.Sprintf("  add %s, %s, %s@PAGEOFF", dest, src, label), ""))
+}
+
 func comment(text string) {
 	addLine(NewComment(text))
 }
@@ -191,8 +205,19 @@ func makeFuncLabel(l string) string {
 }
 
 func makeLocalLabel() string {
-	l := fmt.Sprintf(".L%d", localLabelCount)
+	l := fmt.Sprintf("L%d", localLabelCount)
 	localLabelCount++
+	return l
+}
+
+func makeStringLabel() string {
+	var l string
+	if stringLabelCount == 0 {
+		l = fmt.Sprintf("l_.str")
+	} else {
+		l = fmt.Sprintf("l_.str.%d", stringLabelCount)
+	}
+	stringLabelCount++
 	return l
 }
 
@@ -216,6 +241,19 @@ func gen(node *Node) {
 		subSp(16)
 		movI("x8", node.val)
 		strSt("x8")
+		return
+	case NdSTRING:
+		comment(node.kind.String())
+
+		// 文字列につけるラベルを生成
+		l := makeStringLabel()
+		// コードジェネレータが最後に一覧を書き出せるように保存
+		defStrings = append(defStrings, NewDefString(l, node.data))
+
+		adrpPage("x0", l)
+		addPageOFF("x0", "x0", l)
+		subSp(16)
+		strSt("x0")
 		return
 	case NdLVAR:
 		comment(node.kind.String())
@@ -412,6 +450,7 @@ func gen(node *Node) {
 		for i, arg := range node.arguments {
 			gen(arg)
 			ldrSt(fmt.Sprintf("x%d", i))
+			addSp(16)
 		}
 
 		bl(node.label)
@@ -470,6 +509,7 @@ func gen(node *Node) {
 
 func Generate(nodes []*Node) string {
 	// prologue
+	addLine(NewSrcLine("    .section  __TEXT,__text,regular,pure_instructions", ""))
 	comment(fmt.Sprintf("compiled at %s", time.Now().String()))
 	text()
 	align(2)
@@ -481,6 +521,7 @@ func Generate(nodes []*Node) string {
 	subSp(32)
 	stpS("x29", "x30")
 
+	// generate assemblies from nodes
 	var src string
 	for _, n := range nodes {
 		if n != nil {
@@ -488,10 +529,23 @@ func Generate(nodes []*Node) string {
 		}
 	}
 
+	addLine(NewSrcLine("    .section    __TEXT,__cstring,cstring_literals", ""))
+	// define string bottom
+	for _, l := range defStrings {
+		//src += fmt.Sprintf("%s:\n", l.label)
+		//src += fmt.Sprintf(".asciz %s\n", l.data)
+		defLabel(l.label)
+		addLine(NewSrcLine(fmt.Sprintf("  .asciz \"%s\"", l.data), ""))
+	}
+
+	addLine(NewSrcLine(".subsections_via_symbols", ""))
+
+	// print source code lines
 	for _, l := range lines {
 		src += l.String() + "\n"
 	}
 
+	// print warn top
 	if spRelativePos != 0 {
 		fmt.Printf("; warn: stack pointer is %d at the end.\n", spRelativePos)
 	}

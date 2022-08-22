@@ -134,4 +134,8 @@ assert_lib "./lib/foo.c" 3 "return add1(2);"
 
 assert_lib "./lib/foo.c" 20 "return addAB(add1(1) * 2, 6) * 2;"
 assert_lib "./lib/foo.c" 30 "return addABC(addAB(add1(1) * 2, 6) * 2, 9, 1);"
+
+assert_lib "./lib/foo.c" 3 "three = add1(2); return three;"
+assert_lib "./lib/foo.c" 10 "three = addAB(1, 2); return three*3 + 1;"
+assert_lib "./lib/foo.c" 45 'name = "john"; wprintf(name); return 45;'
 echo OK
