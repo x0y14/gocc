@@ -36,6 +36,6 @@ add        = mul ("+" mul | "-" mul)*
 mul        = unary ("*" unary | "/" unary)*
 unary      = ("+" | "-")? primary
 primary    = num
-           | ident ("(" ")")?
+           | ident ("(" (expr ","?)* ")")?
            | "(" expr ")"
 ```

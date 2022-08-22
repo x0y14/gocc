@@ -244,8 +244,16 @@ func primary() *Node {
 
 		// 関数
 		if consume("(") {
-			node = NewNodeCALL(identToken.str)
-			expect(")")
+			//node = NewNodeCALL(identToken.str)
+			var args []*Node
+			for !consume(")") {
+				args = append(args, expr())
+				if !consume(",") {
+					expect(")")
+					break
+				}
+			}
+			node = NewNodeCALL(identToken.str, args)
 			return node
 		}
 

@@ -408,6 +408,12 @@ func gen(node *Node) {
 		//write(NewSrcLine(fmt.Sprintf("  add x0, x0, %s@PAGEOFF", node.label), ""))
 		//blr("x0")
 
+		// arguments
+		for i, arg := range node.arguments {
+			gen(arg)
+			ldrSt(fmt.Sprintf("x%d", i))
+		}
+
 		bl(node.label)
 
 		subSp(16)

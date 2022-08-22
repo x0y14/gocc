@@ -130,4 +130,8 @@ assert_lib "./lib/foo.c" 5 "return 5;"
 assert_lib "./lib/foo.c" 5 "for (i=0; i<10; i=i+1) { foo(); } return 5;"
 
 assert_lib "./lib/foo.c" 10 "for (i=0;i<100;i=i+1) {foo(); } return 10;"
+assert_lib "./lib/foo.c" 3 "return add1(2);"
+
+assert_lib "./lib/foo.c" 20 "return addAB(add1(1) * 2, 6) * 2;"
+assert_lib "./lib/foo.c" 30 "return addABC(addAB(add1(1) * 2, 6) * 2, 9, 1);"
 echo OK

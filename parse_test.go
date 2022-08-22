@@ -36,9 +36,7 @@ func TestParse(t *testing.T) {
 			name:  "expect 20",
 			token: Tokenize([]rune("if (8 < 2) return 10; return 20;")),
 			expect: []*Node{
-				NewNode(NdIF,
-					NewNode(NdLT, NewNodeNum(8), NewNodeNum(2)),
-					NewNode(NdRETURN, NewNodeNum(10), nil)),
+				NewNodeWithExpr(NdIF, nil, NewNode(NdLT, NewNodeNum(8), NewNodeNum(2)), nil, NewNode(NdRETURN, NewNodeNum(10), nil), nil),
 				NewNode(NdRETURN, NewNodeNum(20), nil),
 				nil,
 			},
@@ -53,19 +51,52 @@ func TestParse(t *testing.T) {
 				nil,
 			},
 		},
+		{
+			name:  "call func without argument",
+			token: Tokenize([]rune("add1();")),
+			expect: []*Node{
+				NewNodeCALL([]rune("add1"), nil),
+				nil,
+			},
+		},
+		{
+			name:  "call func 1 argument",
+			token: Tokenize([]rune("add(1);")),
+			expect: []*Node{
+				NewNodeCALL([]rune("add"), []*Node{NewNodeNum(1)}),
+				nil,
+			},
+		},
+		{
+			name:  "call func with 2 argument (num, call)",
+			token: Tokenize([]rune("add(1, add(2));")),
+			expect: []*Node{
+				NewNodeCALL([]rune("add"), []*Node{NewNodeNum(1), NewNodeCALL([]rune("add"), []*Node{NewNodeNum(2)})}),
+				nil,
+			},
+		},
+		{
+			name:  "call func with 2 argument(num, num)",
+			token: Tokenize([]rune("add(1, 2);")),
+			expect: []*Node{
+				NewNodeCALL([]rune("add"), []*Node{NewNodeNum(1), NewNodeNum(2)}),
+				nil,
+			},
+		},
+		{
+			name:  "call func 3 argument(ident, call, eq)",
+			token: Tokenize([]rune("add(one, add(two), one==1);")),
+			expect: []*Node{
+				NewNodeCALL([]rune("add"), []*Node{NewNodeLVar(16), NewNodeCALL([]rune("add"), []*Node{NewNodeLVar(32)}), NewNode(NdEQ, NewNodeLVar(16), NewNodeNum(1))}),
+				nil,
+			},
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.expect, Parse(tt.token))
+			p := Parse(tt.token)
+			assert.Equal(t, tt.expect, p)
 		})
-	}
-}
-
-func TestGen(t *testing.T) {
-	token := Tokenize([]rune("a=1;"))
-	code := Parse(token)
-	for _, node := range code {
-		Gen(node)
 	}
 }
