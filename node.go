@@ -1,5 +1,7 @@
 package gocc
 
+import "log"
+
 type Node struct {
 	kind      NodeKind
 	init      *Node  // for (A;B;C)のA
@@ -72,5 +74,17 @@ func NewNodeCALL(functionName []rune, args []*Node) *Node {
 		kind:      NdCALL,
 		label:     "_" + string(functionName),
 		arguments: args,
+	}
+}
+
+func NewNodeFunction(name []rune, args []*Node, block *Node) *Node {
+	if block.kind != NdBLOCK {
+		log.Fatalf("arg-block received node the kind of other than NdBLOCK.")
+	}
+	return &Node{
+		kind:      NdFUNCTION,
+		data:      string(name),
+		arguments: args,
+		lhs:       block,
 	}
 }
