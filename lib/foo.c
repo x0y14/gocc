@@ -19,3 +19,7 @@ int addAB(int a, int b) {
 int addABC(int a, int b, int c) {
     return a + b + c;
 }
+
+void wprintf(char *c) {
+    printf("%s", c);
+}
