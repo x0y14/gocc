@@ -28,7 +28,6 @@ const (
 	NdFOR
 
 	NdBLOCK // "{" stmt* "}"
-	NdSTRING
 	NdFUNCTION
 )
 
@@ -53,7 +52,6 @@ var nodeKinds = [...]string{
 	NdWHILE:    "NdWHILE",
 	NdFOR:      "NdFOR",
 	NdBLOCK:    "NdBLOCK",
-	NdSTRING:   "NdSTRING",
 	NdFUNCTION: "NdFUNCTION",
 }
 

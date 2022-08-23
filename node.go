@@ -53,13 +53,6 @@ func NewNodeNum(val int) *Node {
 	}
 }
 
-func NewNodeString(data []rune) *Node {
-	return &Node{
-		kind: NdSTRING,
-		data: string(data),
-	}
-}
-
 func NewNodeLVar(offset int) *Node {
 	return &Node{
 		kind:   NdLVAR,

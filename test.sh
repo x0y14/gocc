@@ -138,7 +138,7 @@ assert_lib "./lib/foo.c" 30 "main() {return addABC(addAB(add1(1) * 2, 6) * 2, 9,
 
 assert_lib "./lib/foo.c" 3 "main() {three = add1(2); return three;}"
 assert_lib "./lib/foo.c" 10 "main() {three = addAB(1, 2); return three*3 + 1;}"
-assert_lib "./lib/foo.c" 45 'main() {name = "john"; wprintf(name); return 45;}'
+#assert_lib "./lib/foo.c" 45 'main() {name = "john"; wprintf(name); return 45;}'
 assert 7 "
 add(x,y) {
 return x+y;}

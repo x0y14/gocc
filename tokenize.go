@@ -169,19 +169,19 @@ userInputLoop:
 		}
 
 		// string
-		if userInput[p] == '"' {
-			// "
-			cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
-			p++
-
-			string_ := str()
-			cur = NewToken(TkSTRING, cur, string_, len(string_))
-
-			// "
-			cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
-			p++
-			continue
-		}
+		//if userInput[p] == '"' {
+		//	// "
+		//	cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
+		//	p++
+		//
+		//	string_ := str()
+		//	cur = NewToken(TkSTRING, cur, string_, len(string_))
+		//
+		//	// "
+		//	cur = NewToken(TkRESERVED, cur, []rune{userInput[p]}, 1)
+		//	p++
+		//	continue
+		//}
 
 		errorAt("トークナイズできません")
 

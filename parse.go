@@ -64,14 +64,14 @@ func expectNumber() int {
 	return val
 }
 
-func expectString() []rune {
-	if token.kind != TkSTRING {
-		errorAt("文字列ではありません")
-	}
-	data := token.str
-	token = token.next
-	return data
-}
+//func expectString() []rune {
+//	if token.kind != TkSTRING {
+//		errorAt("文字列ではありません")
+//	}
+//	data := token.str
+//	token = token.next
+//	return data
+//}
 
 func atEof() bool {
 	return token.kind == TkEOF
@@ -323,11 +323,11 @@ func primary() *Node {
 	}
 
 	// string
-	if consume("\"") {
-		node := NewNodeString(expectString())
-		expect("\"")
-		return node
-	}
+	//if consume("\"") {
+	//	node := NewNodeString(expectString())
+	//	expect("\"")
+	//	return node
+	//}
 
 	return NewNodeNum(expectNumber())
 }

@@ -244,19 +244,19 @@ func gen(node *Node) {
 		movI("x8", node.val)
 		strSt("x8")
 		return
-	case NdSTRING:
-		comment(node.kind.String())
-
-		// 文字列につけるラベルを生成
-		l := makeStringLabel()
-		// コードジェネレータが最後に一覧を書き出せるように保存
-		defStrings = append(defStrings, NewDefString(l, node.data))
-
-		adrpPage("x0", l)
-		addPageOFF("x0", "x0", l)
-		subSp(16)
-		strSt("x0")
-		return
+	//case NdSTRING:
+	//	comment(node.kind.String())
+	//
+	//	// 文字列につけるラベルを生成
+	//	l := makeStringLabel()
+	//	// コードジェネレータが最後に一覧を書き出せるように保存
+	//	defStrings = append(defStrings, NewDefString(l, node.data))
+	//
+	//	adrpPage("x0", l)
+	//	addPageOFF("x0", "x0", l)
+	//	subSp(16)
+	//	strSt("x0")
+	//	return
 	case NdLVAR:
 		comment(node.kind.String())
 		genLocalVariable(node)
